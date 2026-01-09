@@ -10,8 +10,22 @@ spring:
   profiles:
     active: dev
 
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: ${DRIVER_CLASS}
+
+  jpa:
+    hibernate:
+      ddl-auto: ${DDL_MODE}
+    show-sql: ${SHOW_SQL}
+    properties:
+      hibernate:
+        dialect: ${DB_DIALECT}
+
 logging:
   level:
     root: INFO
-    org.springframework.web: DEBUG
-    org.hibernate.SQL: DEBUG
+    '[org.springframework.web]': DEBUG
+    '[org.hibernate.SQL]': DEBUG

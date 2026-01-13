@@ -1,0 +1,49 @@
+package com.app.main.product.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.util.UUID;
+
+@Entity
+@Table(name = "products")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(length = 500)
+    private String description;
+
+    @Column(length = 80)
+    private String brand;
+
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal price = BigDecimal.ZERO;
+
+    @Column(length = 20)
+    private String unit;
+
+    @Column(nullable = false)
+    private Integer quantity = 0;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+}
+

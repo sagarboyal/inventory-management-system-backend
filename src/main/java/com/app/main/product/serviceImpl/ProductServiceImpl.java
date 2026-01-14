@@ -1,9 +1,11 @@
 package com.app.main.product.serviceImpl;
 
 import com.app.main.exception.custom.ResourceNotFoundException;
+import com.app.main.payload.response.PagedResponse;
 import com.app.main.product.entity.Category;
 import com.app.main.product.entity.Product;
 import com.app.main.product.mapper.ProductMapper;
+import com.app.main.product.payload.request.FilterProductListRequest;
 import com.app.main.product.payload.request.ProductRequest;
 import com.app.main.product.payload.request.ProductUpdateRequest;
 import com.app.main.product.payload.response.ProductResponse;
@@ -12,6 +14,10 @@ import com.app.main.product.repository.ProductRepository;
 import com.app.main.product.service.ProductService;
 import com.app.main.utils.AppUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,11 +41,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponse> getAllProducts() {
-        return productRepository.findAll()
+    public PagedResponse<ProductResponse> getAllProducts(FilterProductListRequest filterRequest) {
+        Sort sort = filterRequest.getSortOrder().equalsIgnoreCase("asc") ?
+                Sort.by(filterRequest.getSortBy()).ascending() : Sort.by(filterRequest.getSortBy()).descending();
+
+        Pageable pageDetails = PageRequest.of(filterRequest.getPageNumber(), filterRequest.getPageSize(), sort);
+        Page<Product> productPage = productRepository.findAll(pageDetails);
+        List<ProductResponse> content = productPage.getContent()
                 .stream()
                 .map(productMapper::toResponse)
                 .toList();
+
+        return AppUtils.toPageResponse(content, productPage);
     }
 
     @Override

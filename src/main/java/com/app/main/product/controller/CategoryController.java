@@ -4,7 +4,7 @@ import com.app.main.payload.response.PagedResponse;
 import com.app.main.product.payload.request.CategoryRequest;
 import com.app.main.product.payload.request.CategoryUpdateRequest;
 import com.app.main.product.payload.request.CategoryUpdateStatusRequest;
-import com.app.main.product.payload.request.FilterCategoryRequest;
+import com.app.main.product.payload.request.FilterCategoryListRequest;
 import com.app.main.product.payload.response.CategoryResponse;
 import com.app.main.product.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<PagedResponse<CategoryResponse>> getAllCategories(
-            @RequestBody FilterCategoryRequest request
+            @RequestBody FilterCategoryListRequest request
             ) {
         request.normalize();
         return ResponseEntity.ok(categoryService.findAllCategories(request));

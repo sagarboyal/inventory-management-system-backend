@@ -8,7 +8,7 @@ import com.app.main.utils.AppUtils;
 import com.app.main.product.payload.request.CategoryRequest;
 import com.app.main.product.payload.request.CategoryUpdateRequest;
 import com.app.main.product.payload.request.CategoryUpdateStatusRequest;
-import com.app.main.product.payload.request.FilterCategoryRequest;
+import com.app.main.product.payload.request.FilterCategoryListRequest;
 import com.app.main.product.payload.response.CategoryResponse;
 import com.app.main.product.repository.CategoryRepository;
 import com.app.main.product.service.CategoryService;
@@ -36,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public PagedResponse<CategoryResponse> findAllCategories(FilterCategoryRequest request) {
+    public PagedResponse<CategoryResponse> findAllCategories(FilterCategoryListRequest request) {
         Sort sort = request.getSortOrder().equalsIgnoreCase("asc")
                 ? Sort.by(request.getSortBy()).ascending()
                 : Sort.by(request.getSortBy()).descending();

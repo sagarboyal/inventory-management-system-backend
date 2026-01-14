@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -48,5 +49,21 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @Column(nullable = false, updatable = false)
+    private Instant createdOn;
+
+    @Column(nullable = false)
+    private Instant updatedOn;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdOn = Instant.now();
+    }
+
+    @PostPersist
+    public void postPersist() {
+        this.createdOn = Instant.now();
+    }
 }
 

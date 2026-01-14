@@ -1,15 +1,22 @@
 package com.app.main.product.serviceImpl;
 
 import com.app.main.exception.custom.ResourceNotFoundException;
+import com.app.main.payload.response.PagedResponse;
 import com.app.main.product.entity.Category;
 import com.app.main.product.mapper.CategoryMapper;
+import com.app.main.utils.PageMapper;
 import com.app.main.product.payload.request.CategoryRequest;
 import com.app.main.product.payload.request.CategoryUpdateRequest;
 import com.app.main.product.payload.request.CategoryUpdateStatusRequest;
+import com.app.main.product.payload.request.FilterCategoryRequest;
 import com.app.main.product.payload.response.CategoryResponse;
 import com.app.main.product.repository.CategoryRepository;
 import com.app.main.product.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,17 +36,21 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryResponse> findAllCategories() {
-        return categoryRepository.findAll()
+    public PagedResponse<CategoryResponse> findAllCategories(FilterCategoryRequest request) {
+        Sort sort = request.getSortOrder().equalsIgnoreCase("asc")
+                ? Sort.by(request.getSortBy()).ascending()
+                : Sort.by(request.getSortBy()).descending();
+
+        Pageable pageDetails = PageRequest.of(request.getPageNumber(), request.getPageSize(), sort);
+        Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
+
+        List<CategoryResponse> categoryList = categoryPage
+                .getContent()
                 .stream()
                 .map(mapper::toResponse)
                 .toList();
-    }
 
-    @Override
-    public CategoryResponse findCategoryById(Long id) {
-        Category category = getCategoryById(id);
-        return mapper.toResponse(category);
+        return PageMapper.toResponse(categoryList, categoryPage);
     }
 
     @Override

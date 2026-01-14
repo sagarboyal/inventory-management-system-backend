@@ -7,7 +7,6 @@ import com.app.main.product.payload.response.CategoryResponse;
 import java.util.List;
 
 public interface CategoryService {
-
     CategoryResponse addCategory(CategoryRequest categoryRequest);
     List<CategoryResponse> findAllCategories();
     CategoryResponse findCategoryById(Long id);

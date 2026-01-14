@@ -1,6 +1,8 @@
 package com.app.main.product.serviceImpl;
 
+import com.app.main.exception.custom.ResourceNotFoundException;
 import com.app.main.product.entity.Category;
+import com.app.main.product.mapper.CategoryMapper;
 import com.app.main.product.payload.request.CategoryRequest;
 import com.app.main.product.payload.request.CategoryUpdateRequest;
 import com.app.main.product.payload.response.CategoryResponse;
@@ -10,43 +12,41 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper mapper;
 
     @Override
     public CategoryResponse addCategory(CategoryRequest categoryRequest) {
         Category category = new Category();
         category.setName(categoryRequest.name());
-        return convertToResponse(categoryRepository.save(category));
+        return mapper.toResponse(categoryRepository.save(category));
     }
 
     @Override
     public List<CategoryResponse> findAllCategories() {
         return categoryRepository.findAll()
                 .stream()
-                .map(this::convertToResponse)
+                .map(mapper::toResponse)
                 .toList();
     }
 
     @Override
     public CategoryResponse findCategoryById(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
-        return convertToResponse(category);
+        Category category = getCategoryById(id);
+        return mapper.toResponse(category);
     }
 
     @Override
     public CategoryResponse updateCategory(CategoryUpdateRequest categoryUpdateRequest) {
-        Category category = categoryRepository.findById(categoryUpdateRequest.id())
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + categoryUpdateRequest.id()));
+        Category category = getCategoryById(categoryUpdateRequest.id());
 
         category.setName(categoryUpdateRequest.name());
-        return convertToResponse(categoryRepository.save(category));
+        return mapper.toResponse(categoryRepository.save(category));
     }
 
     @Override
@@ -57,12 +57,8 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.deleteById(id);
     }
 
-    private CategoryResponse convertToResponse(Category category){
-        return CategoryResponse.builder()
-                .id(category.getId())
-                .name(category.getName())
-                .status(category.getStatus())
-                .createdOn(category.getCreatedOn())
-                .build();
+    private Category getCategoryById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
     }
 }

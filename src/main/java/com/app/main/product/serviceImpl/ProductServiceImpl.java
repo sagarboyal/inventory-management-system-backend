@@ -26,6 +26,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
+
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
@@ -37,16 +38,27 @@ public class ProductServiceImpl implements ProductService {
         Product product = productMapper.toEntity(request);
         product.setCategory(category);
 
-        return productMapper.toResponse(productRepository.save(product));
+        return productMapper.toResponse(
+                productRepository.save(product)
+        );
     }
 
     @Override
-    public PagedResponse<ProductResponse> getAllProducts(FilterProductListRequest filterRequest) {
-        Sort sort = filterRequest.getSortOrder().equalsIgnoreCase("asc") ?
-                Sort.by(filterRequest.getSortBy()).ascending() : Sort.by(filterRequest.getSortBy()).descending();
+    public PagedResponse<ProductResponse> getAllProducts(
+            FilterProductListRequest filterRequest) {
 
-        Pageable pageDetails = PageRequest.of(filterRequest.getPageNumber(), filterRequest.getPageSize(), sort);
+        Sort sort = filterRequest.getSortOrder().equalsIgnoreCase("asc")
+                ? Sort.by(filterRequest.getSortBy()).ascending()
+                : Sort.by(filterRequest.getSortBy()).descending();
+
+        Pageable pageDetails = PageRequest.of(
+                filterRequest.getPageNumber(),
+                filterRequest.getPageSize(),
+                sort
+        );
+
         Page<Product> productPage = productRepository.findAll(pageDetails);
+
         List<ProductResponse> content = productPage.getContent()
                 .stream()
                 .map(productMapper::toResponse)
@@ -59,20 +71,36 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse updateProduct(ProductUpdateRequest request) {
         Product product = getProduct(request.id());
 
-        product.setName(AppUtils.applyString(request.name(), product.getName()));
-        product.setDescription(AppUtils.applyString(request.description(), product.getDescription()));
-        product.setBrand(AppUtils.applyString(request.brand(), product.getBrand()));
-        product.setPrice(AppUtils.applyValue(request.price(), product.getPrice()));
-        product.setUnit(AppUtils.applyString(request.unit(), product.getUnit()));
-        product.setQuantity(AppUtils.applyValue(request.quantity(), product.getQuantity()));
-        product.setImageUrl(AppUtils.applyString(request.imageUrl(), product.getImageUrl()));
+        product.setName(
+                AppUtils.applyString(request.name(), product.getName())
+        );
+        product.setDescription(
+                AppUtils.applyString(request.description(), product.getDescription())
+        );
+        product.setBrand(
+                AppUtils.applyString(request.brand(), product.getBrand())
+        );
+        product.setPrice(
+                AppUtils.applyValue(request.price(), product.getPrice())
+        );
+        product.setUnit(
+                AppUtils.applyString(request.unit(), product.getUnit())
+        );
+        product.setQuantity(
+                AppUtils.applyValue(request.quantity(), product.getQuantity())
+        );
+        product.setImageUrl(
+                AppUtils.applyString(request.imageUrl(), product.getImageUrl())
+        );
 
         if (request.categoryId() != null) {
             Category category = getCategoryById(request.categoryId());
             product.setCategory(category);
         }
 
-        return productMapper.toResponse(productRepository.save(product));
+        return productMapper.toResponse(
+                productRepository.save(product)
+        );
     }
 
     @Override
@@ -84,12 +112,16 @@ public class ProductServiceImpl implements ProductService {
     private Category getCategoryById(Long id) {
         return categoryRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Category", "id", id));
+                        new ResourceNotFoundException("Category", "id", id)
+                );
     }
 
     private Product getProduct(UUID id) {
         return productRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Product", "id", String.valueOf(id)));
+                        new ResourceNotFoundException(
+                                "Product", "id", String.valueOf(id)
+                        )
+                );
     }
 }

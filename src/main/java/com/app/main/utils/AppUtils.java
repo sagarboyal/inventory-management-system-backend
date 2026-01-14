@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class PageMapper {
+public class AppUtils {
 
-    public static <T> PagedResponse<T> toResponse(List<T> content, Page<?> page){
+    public static <T> PagedResponse<T> toPageResponse(List<T> content, Page<?> page){
         return PagedResponse.<T>builder()
                 .content(content)
                 .totalPages(page.getTotalPages())
@@ -20,4 +20,11 @@ public class PageMapper {
                 .build();
     }
 
+    public static String applyString(String newVal, String oldVal) {
+        return (newVal != null && !newVal.isBlank()) ? newVal.trim() : oldVal;
+    }
+
+    public static <T> T applyValue(T newVal, T oldVal) {
+        return newVal != null ? newVal : oldVal;
+    }
 }

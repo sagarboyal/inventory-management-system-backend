@@ -4,7 +4,7 @@ import com.app.main.exception.custom.ResourceNotFoundException;
 import com.app.main.payload.response.PagedResponse;
 import com.app.main.product.entity.Category;
 import com.app.main.product.mapper.CategoryMapper;
-import com.app.main.utils.PageMapper;
+import com.app.main.utils.AppUtils;
 import com.app.main.product.payload.request.CategoryRequest;
 import com.app.main.product.payload.request.CategoryUpdateRequest;
 import com.app.main.product.payload.request.CategoryUpdateStatusRequest;
@@ -50,7 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .map(mapper::toResponse)
                 .toList();
 
-        return PageMapper.toResponse(categoryList, categoryPage);
+        return AppUtils.toPageResponse(categoryList, categoryPage);
     }
 
     @Override

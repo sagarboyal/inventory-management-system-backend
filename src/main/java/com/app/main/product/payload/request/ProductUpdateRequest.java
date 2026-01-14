@@ -1,15 +1,17 @@
 package com.app.main.product.payload.request;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
-import jakarta.validation.constraints.*;
+public record ProductUpdateRequest (
+        @NotNull(message = "product id required")
+        UUID id,
 
-public record ProductRequest(
-
-        @NotBlank(message = "Product name is required")
         @Size(min = 2, max = 150, message = "Product name must be 2 to 150 characters")
         String name,
 
@@ -19,23 +21,19 @@ public record ProductRequest(
         @Size(max = 80, message = "Brand max 80 characters")
         String brand,
 
-        @NotNull(message = "Price is required")
         @DecimalMin(value = "0.01", message = "Price must be greater than 0")
         BigDecimal price,
 
-        @NotBlank(message = "Unit is required")
         @Size(max = 20, message = "Unit max 20 characters")
         String unit,
 
-        @NotNull(message = "Quantity is required")
-        @Min(value = 0, message = "Quantity cannot be negative")
+        @Size(max = 20, message = "Unit max 20 characters")
         Integer quantity,
 
         @Size(max = 1000, message = "Image url max 1000 characters")
         String imageUrl,
 
-        @NotNull(message = "Category id is required")
         @Positive(message = "Category id must be positive")
         Long categoryId
-) {}
-
+) {
+}

@@ -4,12 +4,13 @@ import com.app.main.product.entity.Category;
 import com.app.main.product.entity.Product;
 import com.app.main.product.payload.request.ProductRequest;
 import com.app.main.product.payload.response.ProductResponse;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProductMapper {
 
-    public static Product toEntity(ProductRequest request, Category category) {
+    public Product toEntity(ProductRequest request) {
         Product product = new Product();
-        product.setSku(request.sku());
         product.setName(request.name());
         product.setDescription(request.description());
         product.setBrand(request.brand());
@@ -17,27 +18,10 @@ public class ProductMapper {
         product.setUnit(request.unit());
         product.setQuantity(request.quantity());
         product.setImageUrl(request.imageUrl());
-        product.setCategory(category);
         return product;
     }
 
-    public static void updateEntity(
-            Product product,
-            ProductRequest request,
-            Category category) {
-
-        product.setSku(request.sku());
-        product.setName(request.name());
-        product.setDescription(request.description());
-        product.setBrand(request.brand());
-        product.setPrice(request.price());
-        product.setUnit(request.unit());
-        product.setQuantity(request.quantity());
-        product.setImageUrl(request.imageUrl());
-        product.setCategory(category);
-    }
-
-    public static ProductResponse toResponse(Product product) {
+    public ProductResponse toResponse(Product product) {
         return ProductResponse.builder()
                 .id(product.getId())
                 .sku(product.getSku())

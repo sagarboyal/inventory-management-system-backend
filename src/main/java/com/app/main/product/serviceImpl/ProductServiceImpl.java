@@ -5,10 +5,12 @@ import com.app.main.product.entity.Category;
 import com.app.main.product.entity.Product;
 import com.app.main.product.mapper.ProductMapper;
 import com.app.main.product.payload.request.ProductRequest;
+import com.app.main.product.payload.request.ProductUpdateRequest;
 import com.app.main.product.payload.response.ProductResponse;
 import com.app.main.product.repository.CategoryRepository;
 import com.app.main.product.repository.ProductRepository;
 import com.app.main.product.service.ProductService;
+import com.app.main.utils.AppUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,35 +22,44 @@ import java.util.UUID;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ProductMapper productMapper;
 
     @Override
     public ProductResponse addProduct(ProductRequest request) {
         Category category = getCategoryById(request.categoryId());
 
-        Product product = ProductMapper.toEntity(request, category);
-        return ProductMapper.toResponse(productRepository.save(product));
+        Product product = productMapper.toEntity(request);
+        product.setCategory(category);
+
+        return productMapper.toResponse(productRepository.save(product));
     }
 
     @Override
     public List<ProductResponse> getAllProducts() {
         return productRepository.findAll()
                 .stream()
-                .map(ProductMapper::toResponse)
+                .map(productMapper::toResponse)
                 .toList();
     }
 
     @Override
-    public ProductResponse getProductById(UUID id) {
-        return ProductMapper.toResponse(getProduct(id));
-    }
+    public ProductResponse updateProduct(ProductUpdateRequest request) {
+        Product product = getProduct(request.id());
 
-    @Override
-    public ProductResponse updateProduct(UUID id, ProductRequest request) {
-        Product product = getProduct(id);
-        Category category = getCategoryById(request.categoryId());
+        product.setName(AppUtils.applyString(request.name(), product.getName()));
+        product.setDescription(AppUtils.applyString(request.description(), product.getDescription()));
+        product.setBrand(AppUtils.applyString(request.brand(), product.getBrand()));
+        product.setPrice(AppUtils.applyValue(request.price(), product.getPrice()));
+        product.setUnit(AppUtils.applyString(request.unit(), product.getUnit()));
+        product.setQuantity(AppUtils.applyValue(request.quantity(), product.getQuantity()));
+        product.setImageUrl(AppUtils.applyString(request.imageUrl(), product.getImageUrl()));
 
-        ProductMapper.updateEntity(product, request, category);
-        return ProductMapper.toResponse(productRepository.save(product));
+        if (request.categoryId() != null) {
+            Category category = getCategoryById(request.categoryId());
+            product.setCategory(category);
+        }
+
+        return productMapper.toResponse(productRepository.save(product));
     }
 
     @Override

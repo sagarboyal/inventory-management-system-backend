@@ -1,7 +1,6 @@
 package com.app.main.product.controller;
 
 import com.app.main.payload.response.PagedResponse;
-import com.app.main.product.constants.AppConstant;
 import com.app.main.product.payload.request.CategoryRequest;
 import com.app.main.product.payload.request.CategoryUpdateRequest;
 import com.app.main.product.payload.request.CategoryUpdateStatusRequest;
@@ -12,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/categories")

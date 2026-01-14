@@ -2,6 +2,7 @@ package com.app.main.product.controller;
 
 import com.app.main.product.payload.request.CategoryRequest;
 import com.app.main.product.payload.request.CategoryUpdateRequest;
+import com.app.main.product.payload.request.CategoryUpdateStatusRequest;
 import com.app.main.product.payload.response.CategoryResponse;
 import com.app.main.product.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,10 @@ public class CategoryController {
             return ResponseEntity.ok(categoryService.updateCategory(categoryUpdateRequest));
     }
 
+    @PatchMapping
+    public ResponseEntity<CategoryResponse> updateStatusHandler(@RequestBody CategoryUpdateStatusRequest categoryUpdateStatusRequest){
+        return ResponseEntity.ok(categoryService.updateStatus(categoryUpdateStatusRequest));
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);

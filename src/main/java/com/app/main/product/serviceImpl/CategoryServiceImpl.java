@@ -5,6 +5,7 @@ import com.app.main.product.entity.Category;
 import com.app.main.product.mapper.CategoryMapper;
 import com.app.main.product.payload.request.CategoryRequest;
 import com.app.main.product.payload.request.CategoryUpdateRequest;
+import com.app.main.product.payload.request.CategoryUpdateStatusRequest;
 import com.app.main.product.payload.response.CategoryResponse;
 import com.app.main.product.repository.CategoryRepository;
 import com.app.main.product.service.CategoryService;
@@ -51,10 +52,15 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategory(Long id) {
-        if (!categoryRepository.existsById(id)) {
-            throw new RuntimeException("Category not found with id: " + id);
-        }
+        getCategoryById(id);
         categoryRepository.deleteById(id);
+    }
+
+    @Override
+    public CategoryResponse updateStatus(CategoryUpdateStatusRequest categoryUpdateStatusRequest) {
+        Category category = getCategoryById(categoryUpdateStatusRequest.id());
+        category.setStatus(categoryUpdateStatusRequest.status());
+        return mapper.toResponse(categoryRepository.save(category));
     }
 
     private Category getCategoryById(Long id) {

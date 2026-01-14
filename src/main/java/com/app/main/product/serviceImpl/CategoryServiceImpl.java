@@ -1,5 +1,6 @@
 package com.app.main.product.serviceImpl;
 
+import com.app.main.exception.custom.APIExceptions;
 import com.app.main.exception.custom.ResourceNotFoundException;
 import com.app.main.payload.response.PagedResponse;
 import com.app.main.product.entity.Category;
@@ -33,6 +34,20 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = new Category();
         category.setName(categoryRequest.name());
         return mapper.toResponse(categoryRepository.save(category));
+    }
+
+    @Override
+    public List<CategoryResponse> addCategories(List<CategoryRequest> requests) {
+        if (requests == null || requests.isEmpty()) {
+            throw new APIExceptions("Category list cannot be empty");
+        }
+        List<Category> categoryList = requests.stream().map( cate -> {
+            Category category = new Category();
+            category.setName(cate.name());
+            return category;
+        }).toList();
+
+        return categoryRepository.saveAll(categoryList).stream().map(mapper::toResponse).toList();
     }
 
     @Override

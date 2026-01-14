@@ -37,7 +37,31 @@ public class ProductServiceImpl implements ProductService {
         Product product = productMapper.toEntity(request);
         product.setCategory(category);
 
+        Long skuNo = productRepository.getNextSkuNumber();
+        String sku = "SKU" + String.format("%03d", skuNo);
+
+        product.setSkuNo(skuNo);
+        product.setSku(sku);
+
         return productMapper.toResponse(productRepository.save(product));
+    }
+
+    @Override
+    public List<ProductResponse> addProducts(List<ProductRequest> productRequests) {
+        List<Product>  products = productRequests.stream()
+                .map((request) -> {
+                    Product product = productMapper.toEntity(request);
+                    Category category = getCategoryById(request.categoryId());
+                    product.setCategory(category);
+
+                    Long skuNo = productRepository.getNextSkuNumber();
+                    String sku = "SKU" + String.format("%03d", skuNo);
+
+                    product.setSkuNo(skuNo);
+                    product.setSku(sku);
+                    return product;
+                }).toList();
+        return productRepository.saveAll(products).stream().map(productMapper::toResponse).toList();
     }
 
     @Override

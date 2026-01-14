@@ -25,6 +25,9 @@ public class Product {
     @Column(nullable = false)
     private String sku;
 
+    @Column(name = "sku_no", nullable = false, updatable = false, unique = true)
+    private Long skuNo;
+
     @Column(nullable = false)
     private String name;
 
@@ -59,6 +62,8 @@ public class Product {
     @PrePersist
     public void prePersist() {
         this.createdOn = Instant.now();
+        this.updatedOn = Instant.now();
+        this.sku = "SKU" + String.format("%03d", this.skuNo);
     }
 
     @PostPersist

@@ -7,8 +7,11 @@ import com.app.main.product.payload.request.CategoryUpdateStatusRequest;
 import com.app.main.product.payload.request.FilterCategoryListRequest;
 import com.app.main.product.payload.response.CategoryResponse;
 
+import java.util.List;
+
 public interface CategoryService {
     CategoryResponse addCategory(CategoryRequest categoryRequest);
+    List<CategoryResponse> addCategories(List<CategoryRequest> categoryRequests);
     PagedResponse<CategoryResponse> findAllCategories(FilterCategoryListRequest request);
     CategoryResponse updateCategory(CategoryUpdateRequest categoryUpdateRequest);
     void deleteCategory(Long id);

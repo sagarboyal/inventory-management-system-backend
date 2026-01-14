@@ -6,10 +6,12 @@ import com.app.main.product.payload.request.ProductRequest;
 import com.app.main.product.payload.request.ProductUpdateRequest;
 import com.app.main.product.payload.response.ProductResponse;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface ProductService {
     ProductResponse addProduct(ProductRequest productRequest);
+    List<ProductResponse> addProducts(List<ProductRequest> productRequest);
     PagedResponse<ProductResponse> getAllProducts(FilterProductListRequest filterRequest);
     ProductResponse updateProduct(ProductUpdateRequest request);
     void deleteProduct(UUID id);

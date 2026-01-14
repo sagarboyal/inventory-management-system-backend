@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/categories")
 @RequiredArgsConstructor
@@ -22,6 +24,14 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<CategoryResponse> createCategory(@RequestBody CategoryRequest categoryRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.addCategory(categoryRequest));
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<List<CategoryResponse>> createCategories(
+            @RequestBody List<CategoryRequest> categoryRequests
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(categoryService.addCategories(categoryRequests));
     }
 
     @GetMapping

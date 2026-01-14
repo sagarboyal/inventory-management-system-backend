@@ -27,6 +27,14 @@ public class ProductController {
                 .body(productService.addProduct(productRequest));
     }
 
+    @PostMapping("/bulk")
+    public ResponseEntity<List<ProductResponse>> createCategories(
+            @RequestBody List<ProductRequest> categoryRequests
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(productService.addProducts(categoryRequests));
+    }
+
     @GetMapping
     public ResponseEntity<PagedResponse<ProductResponse>> getAllProducts(@RequestBody FilterProductListRequest filterRequest) {
         filterRequest.normalize();
